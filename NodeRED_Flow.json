@@ -1,0 +1,368 @@
+[
+    {
+        "id": "b7ca75dc875d8269",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "6e73732cfa094849",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e5215ce848d001b0",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "127.0.0.1",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "defd5b7ab5daa33d",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": 8086,
+        "protocol": "http",
+        "database": "factory_data",
+        "name": "Local Influx",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "timeout": 10,
+        "rejectUnauthorized": false
+    },
+    {
+        "id": "dbd240332bbd1dd5",
+        "type": "mqtt in",
+        "z": "b7ca75dc875d8269",
+        "name": "",
+        "topic": "factory/chemnitz/cnc_1/sensors",
+        "qos": "1",
+        "datatype": "utf8",
+        "broker": "e5215ce848d001b0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 60,
+        "wires": [
+            [
+                "efde982bab2a40e0"
+            ]
+        ]
+    },
+    {
+        "id": "efde982bab2a40e0",
+        "type": "json",
+        "z": "b7ca75dc875d8269",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 350,
+        "y": 60,
+        "wires": [
+            [
+                "3afd655c442f12b8",
+                "a6b4c630245b2f95"
+            ]
+        ]
+    },
+    {
+        "id": "3afd655c442f12b8",
+        "type": "switch",
+        "z": "b7ca75dc875d8269",
+        "name": "",
+        "property": "payload.MACHINE_STATUS",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "OVERHEATING",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 530,
+        "y": 40,
+        "wires": [
+            [
+                "491e918e669f6430"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "7a2046dcb09b14e2",
+        "type": "change",
+        "z": "b7ca75dc875d8269",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "FACTORY_ALARM",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 930,
+        "y": 40,
+        "wires": [
+            [
+                "4712c940ba094803"
+            ]
+        ]
+    },
+    {
+        "id": "a6b4c630245b2f95",
+        "type": "influxdb out",
+        "z": "b7ca75dc875d8269",
+        "influxdb": "defd5b7ab5daa33d",
+        "name": "Local Influx",
+        "measurement": "machine_telemetry",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "Chemnitz_Plant",
+        "bucket": "Sensors_Realtime",
+        "x": 890,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "4712c940ba094803",
+        "type": "debug",
+        "z": "b7ca75dc875d8269",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 960,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "491e918e669f6430",
+        "type": "delay",
+        "z": "b7ca75dc875d8269",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "10",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 700,
+        "y": 40,
+        "wires": [
+            [
+                "7a2046dcb09b14e2"
+            ]
+        ]
+    },
+    {
+        "id": "08733521943fb8a9",
+        "type": "mqtt in",
+        "z": "6e73732cfa094849",
+        "name": "State",
+        "topic": "factory/chemnitz/cnc_1/state",
+        "qos": "1",
+        "datatype": "utf8",
+        "broker": "e5215ce848d001b0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 100,
+        "wires": [
+            [
+                "ac4280671503dab2"
+            ]
+        ]
+    },
+    {
+        "id": "ac4280671503dab2",
+        "type": "json",
+        "z": "6e73732cfa094849",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 350,
+        "y": 100,
+        "wires": [
+            [
+                "e71ec36ce868c358",
+                "024f35db817c6aad"
+            ]
+        ]
+    },
+    {
+        "id": "5fe7c9612626d415",
+        "type": "change",
+        "z": "6e73732cfa094849",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "FACTORY_ALARM",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 970,
+        "y": 80,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e71ec36ce868c358",
+        "type": "switch",
+        "z": "6e73732cfa094849",
+        "name": "",
+        "property": "payload.STATUS",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "FATAL ERROR",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "ONLINE",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "GRACEFUL_SHUTDOWN",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 530,
+        "y": 100,
+        "wires": [
+            [
+                "104ed5ed66de2413"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "024f35db817c6aad",
+        "type": "influxdb out",
+        "z": "6e73732cfa094849",
+        "influxdb": "defd5b7ab5daa33d",
+        "name": "",
+        "measurement": "machine_telemetry",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "Chemnitz_plant",
+        "bucket": "Sensors_Realtime",
+        "x": 570,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "104ed5ed66de2413",
+        "type": "delay",
+        "z": "6e73732cfa094849",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "10",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 720,
+        "y": 80,
+        "wires": [
+            [
+                "5fe7c9612626d415"
+            ]
+        ]
+    },
+    {
+        "id": "6b81d14f7f81d2c3",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-contrib-influxdb": "0.7.0"
+        }
+    }
+]
