@@ -17,3 +17,6 @@ graph LR
     B -->|Topic Routing| C[Node-RED Edge Processing]
     C -->|Data Structuring| D[(InfluxDB Time-Series Database)]
     D -->|Flux Query Downsampling| E[Grafana Dashboard]
+## Future Work & Roadmap
+* **Containerization:** Wrap the infrastructure layer (Broker, Node-RED, DB, Grafana) into a `docker-compose.yml` stack for single-command deployment.
+* **Industrial Protocols:** Replace the Python simulation layer with a local OPC UA Server to mirror true factory-floor hardware integration.
